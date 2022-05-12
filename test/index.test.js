@@ -549,6 +549,24 @@ describe('Feathers Sequelize Service', () => {
 
       await people.remove(person.id);
     });
+
+    it('can use groupBy with total as a number', async () => {
+      const people = app.service('people');
+      const data = { name: 'Active', status: 'active' };
+      const person = await people.create(data);
+
+      const staPeople = await people.find({
+        query: {},
+        sequelize: {
+          group: ['status']
+        }
+      });
+      try {
+        assert.deepStrictEqual(staPeople.total, 1);
+      } finally {
+        await people.remove(person.id);
+      }
+    });
   });
 
   describe('ORM functionality', () => {
